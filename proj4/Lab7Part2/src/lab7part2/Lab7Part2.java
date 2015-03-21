@@ -64,6 +64,6 @@ public class Lab7Part2 {
         }
         // Erase trailing space and go to new line
         System.out.println("\b");
-    }
+    }//end main
     
 }//end class
