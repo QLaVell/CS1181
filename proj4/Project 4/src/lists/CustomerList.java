@@ -35,5 +35,7 @@ public class CustomerList{
         return nextCustomer;
     }//end getNextCustomer
     
-    
+    public boolean addNewCustomer(Customer newCustomer){
+        return list.add(newCustomer);
+    }//end addNewCustomer
 }
