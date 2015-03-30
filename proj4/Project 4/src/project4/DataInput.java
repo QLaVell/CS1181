@@ -185,4 +185,12 @@ public class DataInput {
     public boolean hasNextLine(){
         return input.hasNextLine();
     }
+    
+    /**
+     * Returns true if there is another integer in the input buffer.
+     * @return true if there is another integer in the input buffer.
+     */
+    public boolean hasNextInt(){
+        return input.hasNextInt();
+    }
 }//end class
