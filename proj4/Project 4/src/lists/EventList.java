@@ -1,7 +1,7 @@
 package lists;
 
 import java.util.PriorityQueue;
-import store_objects.Customer;
+import store_objects.Event;
 
 
 /*
@@ -14,29 +14,29 @@ import store_objects.Customer;
 /**
  * [Describe class here]
  */
-public class CustomerList{
-    private PriorityQueue<Customer> list;
+public class EventList {
+    private PriorityQueue<Event> list;
     
-    public CustomerList(){
+    public EventList(){
         list = new PriorityQueue<>();
-    }//end constructor
+    }
     
     /**
      * Returns the next customer in the queue
      * @return the next customer in the queue
      */
-    public Customer getNextCustomer(){
-        Customer nextCustomer = null;
+    public Event getNextEvent(){
+        Event nextEvent = null;
         
         if(!list.isEmpty()){
-            nextCustomer = list.poll();
+            nextEvent = list.poll();
         }
         
-        return nextCustomer;
+        return nextEvent;
     }//end getNextCustomer
     
-    public boolean addNewCustomer(Customer newCustomer){
-        return list.add(newCustomer);
+    public boolean addNewEvent(Event newEvent){
+        return list.add(newEvent);
     }//end addNewCustomer
     
     public boolean isEmpty(){

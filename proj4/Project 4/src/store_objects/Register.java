@@ -14,17 +14,20 @@ package store_objects;
 public class Register{
     double timePerItem;
     double timePerPayment;
+    int registerNumber;
     Clock clock;
     
-    public Register(double timePerItem, double timePerPayment){
+    public Register(double timePerItem, double timePerPayment, int registerNumber){
         this.timePerItem = timePerItem;
         this.timePerPayment = timePerPayment;
+        this.registerNumber = registerNumber;
         clock = new Clock();
     }
     
-    public void checkout(int numOfItems){
+    public double checkout(int numOfItems){
         checkoutCustomer(numOfItems);
         processPayment();
+        return clock.time();
     }//end checkout
 
     private void processPayment() {
@@ -34,5 +37,9 @@ public class Register{
     private void checkoutCustomer(int numOfItems) {
         clock.time(clock.time() + numOfItems * timePerItem);
     }//end checkoutCustomer
+    
+    public int getRegisterNumber(){
+        return this.registerNumber;
+    }
     
 }//end class

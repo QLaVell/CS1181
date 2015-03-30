@@ -16,6 +16,7 @@ public class Customer implements Comparable<Customer>{
     double arrivalTime;
     int numOfItems;
     double timePerItem;
+    int customerNumber;
     
     public Customer(double arrivalTime, int numOfItems, double timePerItem){
         this.arrivalTime = arrivalTime;
@@ -38,6 +39,14 @@ public class Customer implements Comparable<Customer>{
     public double getTimePerItem(){
         return this.timePerItem;
     }//end getTimePerItem
+    
+    public void setCustomerNumber(int number){
+        this.customerNumber = number;
+    }
+    
+    public int getCustomerNumber(){
+        return this.customerNumber;
+    }
 
     @Override
     public int compareTo(Customer cust) {
