@@ -177,4 +177,12 @@ public class DataInput {
         // return the next boolean.
         return bool;
     }//end getNextBool
+    
+    /**
+     * Returns true if there is another line in the input buffer.
+     * @return true if there is another line in the input buffer.
+     */
+    public boolean hasNextLine(){
+        return input.hasNextLine();
+    }
 }//end class
