@@ -21,6 +21,10 @@ public class Register{
     private RegisterLineQueue customers;
     private int longestLine;
     private double lastLeaveTime;
+    private double downTime;
+    private double totalWaitTime;
+    private int numOfCustomers;
+    private boolean idle;
     
     
     public Register(double timePerItem, double timePerPayment, int registerNumber){
@@ -31,10 +35,16 @@ public class Register{
         this.customers = new RegisterLineQueue();
         this.longestLine = 0;
         this.lastLeaveTime = 0;
+        this.downTime = 0;
+        this.totalWaitTime = 0;
+        this.numOfCustomers = 0;
+        this.idle = true;
     }
     
     public void addCustomer(Customer newCustomer){
         customers.addToBack(newCustomer);
+        numOfCustomers++;
+        idle = false;
         if(getLineLength() > this.longestLine){
             this.longestLine = getLineLength();
         }
@@ -55,10 +65,12 @@ public class Register{
         double waitTime = 0;
         waitTime = lastLeaveTime - (customer.getArrivalTime() + customer.getCheckoutTime());
         if(waitTime < 0){
+            this.downTime += Math.abs(waitTime); 
             waitTime = 0;
         }else{
-            waitTime = waitTime;
+            totalWaitTime += waitTime;
         }
+        System.out.println("Customer " + customer.getCustomerNumber() + " waited " + waitTime + " minutes");
         clock.time(clock.time() + customer.getNumOfItems() * timePerItem + waitTime);
     }//end checkoutCustomer
     
@@ -73,12 +85,27 @@ public class Register{
     public Customer getNextCustomer(){
         int l = getLineLength();
         Customer cust = customers.removeFront();
+        if (l == 0){
+            idle = true;
+        }
         assert l - 1 == getLineLength();
         return cust;
     }
     
     public int getLongestLineLength(){
         return this.longestLine;
+    }
+    
+    public double getDownTime(){
+        return this.downTime;
+    }
+    
+    public double getTotalWaitTime(){
+        return this.totalWaitTime;
+    }
+    
+    public int getTotalCustomers(){
+        return numOfCustomers;
     }
     
 }//end class

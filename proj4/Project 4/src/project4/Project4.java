@@ -29,7 +29,7 @@ public class Project4 {
     public static void main(String[] args) {
         try{
             DataInput customerArrivalsFile = new DataInput(new File("arrival.txt"));
-            DataInput registerFile = new DataInput(new File("checkout.txt"));
+            DataInput registerFile = new DataInput(new File("1-0.txt"));
             
             Register[][] registers = new Register[2][0];
 
@@ -57,24 +57,30 @@ public class Project4 {
                     
                     // Get the line for a register
                     for(int i = 0; i < registerArray.length; i++){
+                        System.out.println("Before split");
                         String[] regInfo = registerFile.getNextLine().split("\\s");
+                        System.out.println("After split");
                         if(regInfo.length == 2){
                             // Read in the registers
                             registerArray[i] = new Register(Double.parseDouble(regInfo[0]), Double.parseDouble(regInfo[1]), regNum++);
+                        }else{
+                            System.out.println("Trying to read register");
                         }
                     }
                     
-                    if(registerType == 1){
-                        // Add the register to the double array
-                        registers[registerType++] = registerArray;
-                    }else{
-                        registers[registerType++] = new Register[] {registerArray[0], registerArray[1], registerArray[2], registerArray[3]};
-                    }
+                    registers[registerType++] = registerArray;
+                    
+//                    if(registerType == 1){
+//                        // Add the register to the double array
+//                        registers[registerType++] = registerArray;
+//                    }else{
+//                        registers[registerType++] = new Register[] {registerArray[0], registerArray[1], registerArray[2], registerArray[3]};
+//                    }
                 }
             }
             
-            int customers = 3839;
-            while((customers > 0) && customerArrivalsFile.hasNextLine()){
+//            int customers = 3839;
+            while(customerArrivalsFile.hasNextLine()){
 //                double arrivalTime = customerArrivals.getNextDouble();
 //                int numItems = customerArrivals.getNextInt();
 //                double timePerItem = customerArrivals.getNextDouble();
@@ -86,7 +92,7 @@ public class Project4 {
                             Integer.parseInt(custInfo[1]), 
                             Double.parseDouble(custInfo[2])));
                 }
-                customers--;
+                
             }
             
             int customerNumber = 1;
@@ -123,7 +129,7 @@ public class Project4 {
                         boolean express = false;
                         cust = (Customer)event.getEventParameter()[0];
                         Register register;
-                        if(cust.getNumOfItems() <= 12){
+                        if(cust.getNumOfItems() < 12){
                             express = true;
                         }
                         register = getShortestRegister(registers, express);
@@ -143,25 +149,36 @@ public class Project4 {
                 }
             }
             
+            int numOfCustomersServed = 0;
+            
             for(Register[] regArray : registers){
                 for(Register r : regArray){
-                    System.out.println(String.format("Register %d had a maximum line of %d", r.getRegisterNumber(), r.getLongestLineLength()));
+                    numOfCustomersServed += r.getTotalCustomers();
+                    System.out.println("Register " + r.getRegisterNumber() + " had:");
+                    System.out.println(String.format("\ta maximum line of %d", r.getLongestLineLength()));
+                    System.out.println(String.format("\ta total down time of %.2f", r.getDownTime()));
+                    System.out.println(String.format("\ta total wait time of %.2f", r.getTotalWaitTime()));
+                    System.out.println(String.format("\tan average wait time of %.2f", r.getTotalWaitTime()/r.getTotalCustomers()));
+                    System.out.println(String.format("\tprocessed %d customers", r.getTotalCustomers()));
                 }
             }
+            System.out.println("The total number of customers served was " + numOfCustomersServed);
         }catch(FileNotFoundException e){
             System.out.println("File not found.");
         }
     }
     
     public static Register getShortestRegister(Register[][] registers, boolean express){
-        Register reg = registers[REGULAR_REGISTERS][0];
-        if(!express){
+        Register reg;
+        if(!express || (registers[EXPRESS_REGISTERS].length <= 0)){
+            reg = registers[REGULAR_REGISTERS][0];
             for(Register register : registers[REGULAR_REGISTERS]){
                 if(register.getLineLength() < reg.getLineLength()){
                     reg = register;
                 }
             }
         }else{
+            reg = registers[EXPRESS_REGISTERS][0];
             for(Register register : registers[EXPRESS_REGISTERS]){
                 if(register.getLineLength() < reg.getLineLength()){
                     reg = register;
