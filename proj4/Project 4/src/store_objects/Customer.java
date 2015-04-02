@@ -17,11 +17,13 @@ public class Customer implements Comparable<Customer>{
     int numOfItems;
     double timePerItem;
     int customerNumber;
+    double waitTime;
     
     public Customer(double arrivalTime, int numOfItems, double timePerItem){
         this.arrivalTime = arrivalTime;
         this.numOfItems = numOfItems;
         this.timePerItem = timePerItem;
+        this.waitTime = 0;
     }//end constructor
     
     public double getCheckoutTime(){
@@ -61,4 +63,11 @@ public class Customer implements Comparable<Customer>{
         return result;
     }//end compareTo
     
+    public void setWaitTime(double waitTime){
+        this.waitTime = waitTime;
+    }
+    
+    public double getWaitTime(){
+        return waitTime;
+    }
 }

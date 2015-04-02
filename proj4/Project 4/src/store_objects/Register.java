@@ -25,6 +25,9 @@ public class Register{
     private double totalWaitTime;
     private int numOfCustomers;
     private boolean idle;
+    private double weightedTotalLength;
+    private double lastUpdateTime;
+    private int timesIdle;
     
     
     public Register(double timePerItem, double timePerPayment, int registerNumber){
@@ -39,15 +42,20 @@ public class Register{
         this.totalWaitTime = 0;
         this.numOfCustomers = 0;
         this.idle = true;
+        this.weightedTotalLength = 0.0;
+        this.lastUpdateTime = 0.0;
+        this.timesIdle = 1;
     }
     
     public void addCustomer(Customer newCustomer){
+        weightedTotalLength += getLineLength()*(clock.time() - lastUpdateTime);
         customers.addToBack(newCustomer);
         numOfCustomers++;
         idle = false;
         if(getLineLength() > this.longestLine){
             this.longestLine = getLineLength();
         }
+        lastUpdateTime = clock.time();
     }
     
     public double checkout(Customer customer){
@@ -62,7 +70,7 @@ public class Register{
     }//end processPayment
 
     private void checkoutCustomer(Customer customer) {
-        double waitTime = 0;
+        double waitTime;
         waitTime = lastLeaveTime - (customer.getArrivalTime() + customer.getCheckoutTime());
         if(waitTime < 0){
             this.downTime += Math.abs(waitTime); 
@@ -70,7 +78,8 @@ public class Register{
         }else{
             totalWaitTime += waitTime;
         }
-        System.out.println("Customer " + customer.getCustomerNumber() + " waited " + waitTime + " minutes");
+        customer.setWaitTime(waitTime);
+//        System.out.println("Customer " + customer.getCustomerNumber() + " waited " + String.format("%.2f", waitTime) + " minutes");
         clock.time(clock.time() + customer.getNumOfItems() * timePerItem + waitTime);
     }//end checkoutCustomer
     
@@ -84,11 +93,14 @@ public class Register{
     
     public Customer getNextCustomer(){
         int l = getLineLength();
+        weightedTotalLength += getLineLength()*(clock.time() - lastUpdateTime);
         Customer cust = customers.removeFront();
-        if (l == 0){
+        if (l - 1 == 0){
             idle = true;
+            timesIdle++;
         }
         assert l - 1 == getLineLength();
+        lastUpdateTime = clock.time();
         return cust;
     }
     
@@ -106,6 +118,14 @@ public class Register{
     
     public int getTotalCustomers(){
         return numOfCustomers;
+    }
+    
+    public double getAverageLength(){
+        return weightedTotalLength / clock.time();
+    }
+    
+    public int getTimesIdle(){
+        return timesIdle;
     }
     
 }//end class
